@@ -20,35 +20,43 @@ const merge = (arr1, arr2) => {
   return result;
 };
 
-const mergeSort = (arr) => {
-  if (arr.length === 1) {
-    return arr;
+const mergeSort = (arr, start, end) => {
+  const length = end - start;
+  const middleIndex = start + Math.floor(length / 2);
+
+  if (length <= 1) {
+    return [arr[start]];
   }
 
-  const leftArr = arr.slice(0, Math.round(arr.length / 2));
-  const rightArr = arr.slice(Math.round(arr.length / 2), arr.length);
-
-  const leftSorted = mergeSort(leftArr);
-  const rightSorted = mergeSort(rightArr);
+  const leftArr = mergeSort(arr, start, middleIndex);
+  const rightArr = mergeSort(arr, middleIndex, end);
   
-  const combinedArrays = merge(leftSorted, rightSorted);
+  const combinedArrays = merge(leftArr, rightArr);
 
   return combinedArrays;
 };
 
-// console.log(mergeSort([5, 4, 3, 2, 1]));
+// console.log(mergeSort([5, 4, 3, 2, 1], 0, [5, 4, 3, 2, 1].length));
 
 const createRandomArray = (size) => {
   const result = [];
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i <= size; i++) {
     result.push(Math.round(Math.random() * 100));
   }
 
   return result;
 };
 
-// mergeSort(createRandomArray(1000000));
+const randArray = createRandomArray(100000);
+const sortedArray = mergeSort(randArray, 0, randArray.length); 
+console.log(sortedArray);
 
-// createRandomArray(1000000).sort();
+const fs = require('fs');
 
-// .slice() and .shift() are killing performance
+fs.writeFile("./fileExample.txt", sortedArray.toString(), (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Array sorted");
+  }
+});
